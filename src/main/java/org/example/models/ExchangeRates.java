@@ -1,13 +1,21 @@
 package org.example.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Currency;
+
 public class ExchangeRates {
     //Айди курса обмена, автоинкремент, первичный ключ
+    @JsonProperty("id")
     private int ID;
     //ID базовой валюты, внешний ключ на Currencies.ID
-    private int BaseCurrencyId;
+    @JsonProperty("baseCurrency")
+    private Currencies BaseCurrency;
     //ID целевой валюты, внешний ключ на Currencies.ID
-    private int TargetCurrencyId;
+    @JsonProperty("targetCurrency")
+    private Currencies TargetCurrency;
     //Курс обмена единицы базовой валюты к единице целевой валюты
+    @JsonProperty("rate")
     private Double Rate;
 
     public int getID() {
@@ -18,20 +26,20 @@ public class ExchangeRates {
         this.ID = ID;
     }
 
-    public int getBaseCurrencyId() {
-        return BaseCurrencyId;
+    public Currencies getBaseCurrency() {
+        return BaseCurrency;
     }
 
-    public void setBaseCurrencyId(int baseCurrencyId) {
-        BaseCurrencyId = baseCurrencyId;
+    public void setBaseCurrency(Currencies baseCurrency) {
+        BaseCurrency = baseCurrency;
     }
 
-    public int getTargetCurrencyId() {
-        return TargetCurrencyId;
+    public Currencies getTargetCurrency() {
+        return TargetCurrency;
     }
 
-    public void setTargetCurrencyId(int targetCurrencyId) {
-        TargetCurrencyId = targetCurrencyId;
+    public void setTargetCurrency(Currencies targetCurrency) {
+        TargetCurrency = targetCurrency;
     }
 
     public Double getRate() {
@@ -40,5 +48,15 @@ public class ExchangeRates {
 
     public void setRate(Double rate) {
         Rate = rate;
+    }
+
+    @Override
+    public String toString() {
+        return "ExchangeRates{" +
+                "ID=" + ID +
+                ", BaseCurrency=" + BaseCurrency +
+                ", TargetCurrency=" + TargetCurrency +
+                ", Rate=" + Rate +
+                '}';
     }
 }

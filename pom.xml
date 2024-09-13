@@ -7,6 +7,7 @@
     <groupId>org.example</groupId>
     <artifactId>Currency_exchange</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -36,7 +37,7 @@
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.0.0</version>
+            <version>4.0.4</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

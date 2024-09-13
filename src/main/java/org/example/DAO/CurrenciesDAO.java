@@ -1,4 +1,4 @@
-package org.example.dao;
+package org.example.DAO;
 
 import org.example.models.Currencies;
 
@@ -6,15 +6,17 @@ import java.util.List;
 
 public interface CurrenciesDAO {
 
-    void crateCurrenciesTable(String code, String fullName, String sign);
+    void crateCurrenciesTable();
 
     void deleteCurrenciesTable();
 
-    void saveCurrencies();
+    void saveCurrencies(String code, String fullName, String sign);
 
     void updateCurrencies(Currencies currencies);
 
-    Currencies getCurrencies(int id);
+    Currencies getCurrenciesByCode(String code);
+
+    Currencies getCurrenciesById(int id);
 
     List<Currencies> getAllCurrencies();
 }

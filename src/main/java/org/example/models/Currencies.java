@@ -41,4 +41,14 @@ public class Currencies {
     public void setSign(String sign) {
         Sign = sign;
     }
+
+    @Override
+    public String toString() {
+        return "Currencies{" +
+                "ID=" + ID +
+                ", Code='" + Code + '\'' +
+                ", FullName='" + FullName + '\'' +
+                ", Sign='" + Sign + '\'' +
+                '}';
+    }
 }

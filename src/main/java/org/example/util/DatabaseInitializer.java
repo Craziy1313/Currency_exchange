@@ -1,57 +1,34 @@
 package org.example.util;
 
-import org.example.dao.CurrenciesDAOImpl;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import org.example.DAO.CurrenciesDAOImpl;
+import org.example.DAO.ExchangeRatesDAOImpl;
 
 public class DatabaseInitializer {
 
     static CurrenciesDAOImpl currenciesDAO = new CurrenciesDAOImpl();
-
-    public static void createTables() {
-
-        // Запрос для создания таблицы Currencies
-        String sqlCreateCourseTable = "CREATE TABLE IF NOT EXISTS Currencies ("
-                + " ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + " Code VARCHAR (10) UNIQUE NOT NULL,"
-                + " FullName VARCHAR(100) NOT NULL,"
-                + " Sign VARCHAR(5) NOT NULL"
-                + ");";
-
-        // Запрос для создания таблицы ExchangeRate
-        String sqlCreateExchangeRates = "CREATE TABLE IF NOT EXISTS ExchangeRate ("
-                + " ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + " BaseCurrencyId INT NOT NULL,"
-                + " TargetCurrencyId INT NOT NULL,"
-                + " Rate REAL NOT NULL,"
-                + " FOREIGN KEY (BaseCurrencyId) REFERENCES Currencies(ID),"
-                + " FOREIGN KEY (TargetCurrencyId) REFERENCES Currencies(ID)"
-                + ");";
-
-        try (Connection connection = SQLiteConnection.getConnect();
-             Statement stmt = connection.createStatement()) {
-
-            stmt.execute(sqlCreateCourseTable);
-            stmt.execute(sqlCreateExchangeRates);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
+    static ExchangeRatesDAOImpl exchangeRateDAO = new ExchangeRatesDAOImpl();
 
     public static void tableEnrich() {
-        currenciesDAO.crateCurrenciesTable("USD", "US Dollar", "$");
-        currenciesDAO.crateCurrenciesTable("EUR", "Euro", "€");
-        currenciesDAO.crateCurrenciesTable("RUB", "Russian Ruble", "₽");
-        currenciesDAO.crateCurrenciesTable("UAH", "Hryvnia", "₴");
-        currenciesDAO.crateCurrenciesTable("KZT", "Tenge", "₸");
-        currenciesDAO.crateCurrenciesTable("GBP", "Pound Sterling", "£");
+
+        currenciesDAO.saveCurrencies("USD", "US Dollar", "$");
+        currenciesDAO.saveCurrencies("EUR", "Euro", "€");
+        currenciesDAO.saveCurrencies("RUB", "Russian Ruble", "₽");
+        currenciesDAO.saveCurrencies("UAH", "Hryvnia", "₴");
+        currenciesDAO.saveCurrencies("KZT", "Tenge", "₸");
+        currenciesDAO.saveCurrencies("GBP", "Pound Sterling", "£");
+        currenciesDAO.saveCurrencies("AUD", "Australian dollar", "A€");
+
+        exchangeRateDAO.saveExchangeRates(1, 2,0.94);
+        exchangeRateDAO.saveExchangeRates(1, 3, 63.75);
+        exchangeRateDAO.saveExchangeRates(1, 4, 36.95);
+        exchangeRateDAO.saveExchangeRates(1, 5, 469.88);
+        exchangeRateDAO.saveExchangeRates(1, 6, 0.81);
     }
-    
-    // Основной метод для инициализации базы данных
+
     public static void initializeDatabase() {
-        createTables();// Создание таблиц
-        tableEnrich();// Заполнение данными
+        currenciesDAO.crateCurrenciesTable();
+        exchangeRateDAO.crateExchangeRatesTable();
+        tableEnrich();
+
     }
 }
