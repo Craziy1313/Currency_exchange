@@ -38,7 +38,6 @@ public class ExchangeRatesServlets extends HttpServlet {
         PrintWriter out = resp.getWriter();
         out.println(jsonResponse);
         out.flush();
-
     }
 
     @Override

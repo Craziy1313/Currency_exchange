@@ -50,8 +50,15 @@ public class CurrenciesDAOImpl implements CurrenciesDAO{
 
             preparedStatement.executeUpdate();
 
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                logger.info("Currency successfully saved: " + code);
+            } else {
+                logger.warning("No rows were affected during saving currency: " + code);
+            }
+
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.log(Level.SEVERE, "Error saving currency: " + e.getMessage(), e);
         }
     }
 

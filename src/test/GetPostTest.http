@@ -1,0 +1,12 @@
+GET http://localhost:8080/Currency_exchange_war/currencies
+Accept: application/json
+
+###
+POST http://localhost:8080/Currency_exchange_war/currencies
+Content-Type: application/x-www-form-urlencoded
+
+name=Test&code=TST&sign=^
+
+###
+GET http://localhost:8080/Currency_exchange_war/exchangeRates
+Accept: application/json

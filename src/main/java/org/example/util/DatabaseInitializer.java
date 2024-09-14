@@ -18,11 +18,11 @@ public class DatabaseInitializer {
         currenciesDAO.saveCurrencies("GBP", "Pound Sterling", "£");
         currenciesDAO.saveCurrencies("AUD", "Australian dollar", "A€");
 
-        exchangeRateDAO.saveExchangeRates(1, 2,0.94);
-        exchangeRateDAO.saveExchangeRates(1, 3, 63.75);
-        exchangeRateDAO.saveExchangeRates(1, 4, 36.95);
-        exchangeRateDAO.saveExchangeRates(1, 5, 469.88);
-        exchangeRateDAO.saveExchangeRates(1, 6, 0.81);
+        exchangeRateDAO.saveExchangeRates("USD", "EUR",0.94);
+//        exchangeRateDAO.saveExchangeRates("USD", 3, 63.75);
+//        exchangeRateDAO.saveExchangeRates("USD", 4, 36.95);
+//        exchangeRateDAO.saveExchangeRates("USD", 5, 469.88);
+//        exchangeRateDAO.saveExchangeRates("USD", 6, 0.81);
     }
 
     public static void initializeDatabase() {

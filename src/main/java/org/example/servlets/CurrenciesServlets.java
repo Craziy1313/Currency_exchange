@@ -8,7 +8,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -22,21 +21,18 @@ public class CurrenciesServlets extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        // Установка типа контента
+
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
-        // Получение списка валют из базы данных
         List<Currencies> currencies = currenciesDAO.getAllCurrencies();
         if (currencies == null) {
             logger.warning("Currencies list is null.");
         }
 
-        // Преобразование списка валют в JSON
         ObjectMapper mapper = new ObjectMapper();
         String jsonResponse = mapper.writeValueAsString(currencies);
 
-        // Отправка JSON ответа
         PrintWriter out = resp.getWriter();
         out.print(jsonResponse);
         out.flush();
@@ -48,22 +44,21 @@ public class CurrenciesServlets extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
-        if ("application/json".equals(req.getContentType())) {
-            StringBuilder jsonBuffer = new StringBuilder();
-            String line;
+        String name = req.getParameter("name");
+        String code = req.getParameter("code");
+        String sign = req.getParameter("sign");
 
-            try (BufferedReader reader = req.getReader()) {
-                while ((line = reader.readLine()) != null) {
-                    jsonBuffer.append(line);
-                }
-            }
+        currenciesDAO.saveCurrencies(code, name, sign);
+        System.out.println("Saving currency: code=" + code + ", name=" + name + ", sign=" + sign);
 
-            String jsonString = jsonBuffer.toString();
+        Currencies currencies = currenciesDAO.getCurrenciesByCode(code);
 
-            ObjectMapper mapper = new ObjectMapper();
-            Currencies currencies = mapper.readValue(jsonString, Currencies.class);
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonResponse = mapper.writeValueAsString(currencies);
 
-            currenciesDAO.saveCurrencies(currencies.getCode(), currencies.getFullName(), currencies.getSign());
-        }
+        PrintWriter out = resp.getWriter();
+        out.println(jsonResponse);
+        out.flush();
+
     }
 }

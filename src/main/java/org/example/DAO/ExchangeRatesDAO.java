@@ -10,7 +10,7 @@ public interface ExchangeRatesDAO {
 
     void deleteExchangeRatesTable();
 
-    void saveExchangeRates(int BaseCurrencyId, int TargetCurrencyId, Double Rate);
+    void saveExchangeRates(String BaseCurrencyId, String TargetCurrencyId, Double Rate);
 
     void updateExchangeRates(ExchangeRates exchangeRates);
 

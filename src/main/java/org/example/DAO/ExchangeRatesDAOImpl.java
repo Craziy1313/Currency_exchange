@@ -1,5 +1,6 @@
 package org.example.DAO;
 
+import org.example.models.Currencies;
 import org.example.models.ExchangeRates;
 import org.example.util.SQLiteConnection;
 
@@ -40,15 +41,18 @@ public class ExchangeRatesDAOImpl implements ExchangeRatesDAO{
         }
     }
 
-        @Override
-    public void saveExchangeRates (int baseCurrencyId, int targetCurrencyId, Double rate) {
+    @Override
+    public void saveExchangeRates (String baseCurrencyId, String targetCurrencyId, Double rate) {
         String sqlInsertCurrency = "INSERT INTO ExchangeRate (BaseCurrencyId, TargetCurrencyId, Rate) VALUES (?, ?, ?)";
+
+        Currencies BaseCurrency = currenciesDAO.getCurrenciesByCode(baseCurrencyId);
+        Currencies TargetCurrency = currenciesDAO.getCurrenciesByCode(targetCurrencyId);
 
         try (Connection connection = SQLiteConnection.getConnect();
              PreparedStatement preparedStatement = connection.prepareStatement(sqlInsertCurrency)) {
 
-            preparedStatement.setString(1, String.valueOf(baseCurrencyId));
-            preparedStatement.setString(2, String.valueOf(targetCurrencyId));
+            preparedStatement.setObject(1, BaseCurrency);
+            preparedStatement.setObject(2, TargetCurrency);
             preparedStatement.setString(3, String.valueOf(rate));
 
             preparedStatement.executeUpdate();
