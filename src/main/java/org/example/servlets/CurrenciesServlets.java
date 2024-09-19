@@ -2,7 +2,9 @@ package org.example.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.DAO.CurrenciesDAOImpl;
+import org.example.DTO.ErrorMessage;
 import org.example.models.Currencies;
+import org.example.services.ParameterValidation;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -10,13 +12,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Optional;
+
+import static org.example.services.ErrorResponse.sendErrorResponse;
 
 @WebServlet("/currencies")
 public class CurrenciesServlets extends HttpServlet {
 
-    private static final Logger logger = Logger.getLogger(CurrenciesServlets.class.getName());
+    ObjectMapper mapper = new ObjectMapper();
     private final CurrenciesDAOImpl currenciesDAO = new CurrenciesDAOImpl();
 
     @Override
@@ -26,11 +31,8 @@ public class CurrenciesServlets extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
 
         List<Currencies> currencies = currenciesDAO.getAllCurrencies();
-        if (currencies == null) {
-            logger.warning("Currencies list is null.");
-        }
 
-        ObjectMapper mapper = new ObjectMapper();
+
         String jsonResponse = mapper.writeValueAsString(currencies);
 
         PrintWriter out = resp.getWriter();
@@ -48,17 +50,41 @@ public class CurrenciesServlets extends HttpServlet {
         String code = req.getParameter("code");
         String sign = req.getParameter("sign");
 
-        currenciesDAO.saveCurrencies(code, name, sign);
-        System.out.println("Saving currency: code=" + code + ", name=" + name + ", sign=" + sign);
+        Optional <ErrorMessage> errorMessageOptional = ParameterValidation.CurrenciesValidation(name, code, sign);
 
-        Currencies currencies = currenciesDAO.getCurrenciesByCode(code);
+        if (errorMessageOptional.isPresent()) {
+            ErrorMessage errorMessage = errorMessageOptional.get();
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); //400 Ошибка
+            sendErrorResponse(resp, errorMessage);
 
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonResponse = mapper.writeValueAsString(currencies);
+        } else {
 
-        PrintWriter out = resp.getWriter();
-        out.println(jsonResponse);
-        out.flush();
+            try {
+                currenciesDAO.saveCurrencies(code, name, sign);
+                Optional<Currencies> currenciesOptional = currenciesDAO.getCurrenciesByCode(code);
+                if (currenciesOptional.isPresent()) {
+                    Currencies currencies = currenciesOptional.get();
+                    String jsonResponse = mapper.writeValueAsString(currencies);
 
+                    resp.setStatus(HttpServletResponse.SC_CREATED); //201
+                    PrintWriter out = resp.getWriter();
+                    out.println(jsonResponse);
+                    out.flush();
+                }
+
+            } catch (SQLException e) {
+                ErrorMessage errorMessage = new ErrorMessage();
+
+                if (e.getMessage().contains("SQLITE_CONSTRAINT_UNIQUE")) {
+                    resp.setStatus(HttpServletResponse.SC_CONFLICT);
+                    errorMessage.setMessage("Код валюты: '" + code + "' уже внесен в базу данных"); // 409 Конфликт
+                    sendErrorResponse(resp,errorMessage);
+                } else {
+                    resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    errorMessage.setMessage(e.getMessage());// 500 Ошибка сервера
+                    sendErrorResponse(resp, errorMessage);
+                }
+            }
+        }
     }
 }

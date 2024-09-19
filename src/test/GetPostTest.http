@@ -10,3 +10,27 @@ name=Test&code=TST&sign=^
 ###
 GET http://localhost:8080/Currency_exchange_war/exchangeRates
 Accept: application/json
+
+###
+POST http://localhost:8080/Currency_exchange_war/exchangeRates
+Content-Type: application/x-www-form-urlencoded
+
+baseCurrencyCode=KZT&targetCurrencyCode=RUB&rate=6
+
+###
+GET http://localhost:8080/Currency_exchange_war/exchange?from=RUB&to=EUR&amount=2000
+Accept: application/json
+
+###
+GET http://localhost:8080/Currency_exchange_war/currency/EUR
+Accept: application/json
+
+###
+GET http://localhost:8080/Currency_exchange_war/exchangeRate/USDEUR
+Accept: application/json
+
+###
+PATCH http://localhost:8080/Currency_exchange_war/exchangeRate/KZTRUB
+Content-Type: application/x-www-form-urlencoded
+
+rate=6

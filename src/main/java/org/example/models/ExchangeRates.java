@@ -2,61 +2,59 @@ package org.example.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Currency;
-
 public class ExchangeRates {
-    //Айди курса обмена, автоинкремент, первичный ключ
-    @JsonProperty("id")
-    private int ID;
-    //ID базовой валюты, внешний ключ на Currencies.ID
-    @JsonProperty("baseCurrency")
-    private Currencies BaseCurrency;
-    //ID целевой валюты, внешний ключ на Currencies.ID
-    @JsonProperty("targetCurrency")
-    private Currencies TargetCurrency;
-    //Курс обмена единицы базовой валюты к единице целевой валюты
-    @JsonProperty("rate")
-    private Double Rate;
 
-    public int getID() {
-        return ID;
+    //Айди курса обмена, автоинкремент, первичный ключ
+    private int id;
+
+    //ID базовой валюты, внешний ключ на Currencies.ID
+    private Currencies baseCurrency;
+
+    //ID целевой валюты, внешний ключ на Currencies.ID
+    private Currencies targetCurrency;
+
+    //Курс обмена единицы базовой валюты к единице целевой валюты
+    private Double rate;
+
+    public int getId() {
+        return id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Currencies getBaseCurrency() {
-        return BaseCurrency;
+        return baseCurrency;
     }
 
     public void setBaseCurrency(Currencies baseCurrency) {
-        BaseCurrency = baseCurrency;
+        this.baseCurrency = baseCurrency;
     }
 
     public Currencies getTargetCurrency() {
-        return TargetCurrency;
+        return targetCurrency;
     }
 
     public void setTargetCurrency(Currencies targetCurrency) {
-        TargetCurrency = targetCurrency;
+        this.targetCurrency = targetCurrency;
     }
 
     public Double getRate() {
-        return Rate;
+        return rate;
     }
 
     public void setRate(Double rate) {
-        Rate = rate;
+        this.rate = rate;
     }
 
     @Override
     public String toString() {
         return "ExchangeRates{" +
-                "ID=" + ID +
-                ", BaseCurrency=" + BaseCurrency +
-                ", TargetCurrency=" + TargetCurrency +
-                ", Rate=" + Rate +
+                "ID=" + id +
+                ", BaseCurrency=" + baseCurrency +
+                ", TargetCurrency=" + targetCurrency +
+                ", Rate=" + rate +
                 '}';
     }
 }

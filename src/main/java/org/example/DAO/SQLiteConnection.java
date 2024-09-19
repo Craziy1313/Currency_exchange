@@ -1,4 +1,4 @@
-package org.example.util;
+package org.example.DAO;
 
 import java.net.URISyntaxException;
 import java.net.URL;

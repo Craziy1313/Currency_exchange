@@ -1,17 +1,17 @@
 package org.example.DTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.example.models.Currencies;
+
+import java.math.BigDecimal;
 
 public class ExchangeCurrency {
 
-    //Айди курса обмена, автоинкремент, первичный ключ
-    private int ID;
-
     //ID базовой валюты, внешний ключ на Currencies.ID
-    private Currencies BaseCurrencyId;
+    private Currencies baseCurrency;
 
     //ID целевой валюты, внешний ключ на Currencies.ID
-    private Currencies TargetCurrencyId;
+    private Currencies targetCurrency;
 
     //Курс обмена единицы базовой валюты к единице целевой валюты
     private Double Rate;
@@ -20,30 +20,22 @@ public class ExchangeCurrency {
     private Double Amount;
 
     //Конвертированная сумма
-    private Double ConvertedAmount;
+    private BigDecimal ConvertedAmount;
 
-    public int getID() {
-        return ID;
+    public Currencies getBaseCurrency() {
+        return baseCurrency;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setBaseCurrency(Currencies baseCurrency) {
+        this.baseCurrency = baseCurrency;
     }
 
-    public Currencies getBaseCurrencyId() {
-        return BaseCurrencyId;
+    public Currencies getTargetCurrency() {
+        return targetCurrency;
     }
 
-    public void setBaseCurrencyId(Currencies baseCurrencyId) {
-        BaseCurrencyId = baseCurrencyId;
-    }
-
-    public Currencies getTargetCurrencyId() {
-        return TargetCurrencyId;
-    }
-
-    public void setTargetCurrencyId(Currencies targetCurrencyId) {
-        TargetCurrencyId = targetCurrencyId;
+    public void setTargetCurrency(Currencies targetCurrency) {
+        this.targetCurrency = targetCurrency;
     }
 
     public Double getRate() {
@@ -62,11 +54,22 @@ public class ExchangeCurrency {
         Amount = amount;
     }
 
-    public Double getConvertedAmount() {
+    public BigDecimal getConvertedAmount() {
         return ConvertedAmount;
     }
 
-    public void setConvertedAmount(Double convertedAmount) {
+    public void setConvertedAmount(BigDecimal convertedAmount) {
         ConvertedAmount = convertedAmount;
+    }
+
+    @Override
+    public String toString() {
+        return "ExchangeCurrency{" +
+                "BaseCurrencyId=" + baseCurrency +
+                ", TargetCurrencyId=" + targetCurrency +
+                ", Rate=" + Rate +
+                ", Amount=" + Amount +
+                ", ConvertedAmount=" + ConvertedAmount +
+                '}';
     }
 }

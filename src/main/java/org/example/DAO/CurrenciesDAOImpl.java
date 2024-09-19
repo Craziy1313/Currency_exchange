@@ -1,11 +1,12 @@
 package org.example.DAO;
 
 import org.example.models.Currencies;
-import org.example.util.SQLiteConnection;
+import org.sqlite.SQLiteErrorCode;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,7 +39,7 @@ public class CurrenciesDAOImpl implements CurrenciesDAO{
     }
 
     @Override
-    public void saveCurrencies(String code, String fullName, String sign) {
+    public void saveCurrencies(String code, String fullName, String sign) throws SQLException {
 
         try (Connection connection = SQLiteConnection.getConnect();
              PreparedStatement preparedStatement = connection.prepareStatement(
@@ -50,25 +51,37 @@ public class CurrenciesDAOImpl implements CurrenciesDAO{
 
             preparedStatement.executeUpdate();
 
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
-                logger.info("Currency successfully saved: " + code);
-            } else {
-                logger.warning("No rows were affected during saving currency: " + code);
-            }
-
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error saving currency: " + e.getMessage(), e);
+            if (e.getErrorCode() == SQLiteErrorCode.SQLITE_CONSTRAINT_UNIQUE.code) {
+                String message = "Код валюты: '" + code + "' уже внесен в базу данных";
+                throw new SQLException(message, e);
+            } else {
+                throw e;
+            }
         }
+
     }
 
     @Override
     public void updateCurrencies(Currencies currencies) {
+        try (Connection connection = SQLiteConnection.getConnect();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "INSERT INTO Currencies (id, code, fullname, sign) VALUES (?, ?, ?, ?)")) {
+
+            preparedStatement.setInt(1, currencies.getId());
+            preparedStatement.setString(2, currencies.getCode());
+            preparedStatement.setString(3, currencies.getName());
+            preparedStatement.setString(3, currencies.getSign());
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error saving currency: " + e.getMessage(), e);
+        }
 
     }
 
     @Override
-    public Currencies getCurrenciesByCode(String code) {
+    public Optional<Currencies> getCurrenciesByCode(String code) {
         Currencies currency = null;
         try (Connection connection = SQLiteConnection.getConnect()) {
             String query = "SELECT Id, Code, FullName, Sign FROM Currencies WHERE Code = ?";
@@ -77,16 +90,12 @@ public class CurrenciesDAOImpl implements CurrenciesDAO{
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                currency = new Currencies();
-                currency.setID(resultSet.getInt("Id"));
-                currency.setCode(resultSet.getString("Code"));
-                currency.setFullName(resultSet.getString("FullName"));
-                currency.setSign(resultSet.getString("Sign"));
+                currency = getCurrenciesFromQuery(resultSet);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return currency;
+        return Optional.ofNullable(currency);
     }
 
     @Override
@@ -99,11 +108,7 @@ public class CurrenciesDAOImpl implements CurrenciesDAO{
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                currency = new Currencies();
-                currency.setID(resultSet.getInt("Id"));
-                currency.setCode(resultSet.getString("Code"));
-                currency.setFullName(resultSet.getString("FullName"));
-                currency.setSign(resultSet.getString("Sign"));
+                currency = getCurrenciesFromQuery(resultSet);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -124,17 +129,23 @@ public class CurrenciesDAOImpl implements CurrenciesDAO{
 
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                Currencies currencies = new Currencies();
-                currencies.setID(resultSet.getInt("Id"));
-                currencies.setCode(resultSet.getString("Code"));
-                currencies.setFullName(resultSet.getString("FullName"));
-                currencies.setSign(resultSet.getString("Sign"));
-
-                list.add(currencies);
+                list.add(getCurrenciesFromQuery(resultSet));
             }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Database error: " + e.getMessage(), e);
         }
         return list;
+    }
+
+    private Currencies getCurrenciesFromQuery(ResultSet result) throws SQLException {
+
+        Currencies currencies = new Currencies();
+
+        currencies.setId(result.getInt("Id"));
+        currencies.setCode(result.getString("Code"));
+        currencies.setName(result.getString("FullName"));
+        currencies.setSign(result.getString("Sign"));
+
+        return currencies;
     }
 }

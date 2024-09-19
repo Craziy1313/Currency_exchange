@@ -1,54 +1,59 @@
 package org.example.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Currencies {
     //Айди валюты, автоинкремент, первичный ключ
-    private int ID;
-    //Айди валюты, автоинкремент, первичный ключ
-    private String Code;
-    //Полное имя валюты
-    private String FullName;
-    //Символ валюты
-    private String Sign;
+    private int id;
 
-    public int getID() {
-        return ID;
+    //Айди валюты, автоинкремент, первичный ключ
+    private String code;
+
+    //Полное имя валюты
+    private String name;
+
+    //Символ валюты
+    private String sign;
+
+    public int getId() {
+        return id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getCode() {
-        return Code;
+        return code;
     }
 
     public void setCode(String code) {
-        Code = code;
+        this.code = code;
     }
 
-    public String getFullName() {
-        return FullName;
+    public String getName() {
+        return name;
     }
 
-    public void setFullName(String fullName) {
-        FullName = fullName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getSign() {
-        return Sign;
+        return sign;
     }
 
     public void setSign(String sign) {
-        Sign = sign;
+        this.sign = sign;
     }
 
     @Override
     public String toString() {
         return "Currencies{" +
-                "ID=" + ID +
-                ", Code='" + Code + '\'' +
-                ", FullName='" + FullName + '\'' +
-                ", Sign='" + Sign + '\'' +
+                "ID=" + id +
+                ", Code='" + code + '\'' +
+                ", FullName='" + name + '\'' +
+                ", Sign='" + sign + '\'' +
                 '}';
     }
 }
