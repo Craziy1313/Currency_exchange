@@ -1,36 +1,36 @@
-GET http://localhost:8080/Currency_exchange_war/currencies
+GET http://localhost:8080/Currency_exchange_war_exploded/currencies
 Accept: application/json
 
 ###
-POST http://localhost:8080/Currency_exchange_war/currencies
+POST http://localhost:8080/Currency_exchange_war_exploded/currencies
 Content-Type: application/x-www-form-urlencoded
 
 name=Test&code=TST&sign=^
 
 ###
-GET http://localhost:8080/Currency_exchange_war/exchangeRates
+GET http://localhost:8080/Currency_exchange_war_exploded/exchangeRates
 Accept: application/json
 
 ###
-POST http://localhost:8080/Currency_exchange_war/exchangeRates
+POST http://localhost:8080/Currency_exchange_war_exploded/exchangeRates
 Content-Type: application/x-www-form-urlencoded
 
-baseCurrencyCode=KZT&targetCurrencyCode=RUB&rate=6
+baseCurrencyCode=RUB&targetCurrencyCode=KZT&rate=6
 
 ###
-GET http://localhost:8080/Currency_exchange_war/exchange?from=RUB&to=EUR&amount=2000
+GET http://localhost:8080/Currency_exchange_war_exploded/exchange?from=RUB&to=EUR&amount=2000
 Accept: application/json
 
 ###
-GET http://localhost:8080/Currency_exchange_war/currency/EUR
+GET http://localhost:8080/Currency_exchange_war_exploded/currency/EUR
 Accept: application/json
 
 ###
-GET http://localhost:8080/Currency_exchange_war/exchangeRate/USDEUR
+GET http://localhost:8080/Currency_exchange_war_exploded/exchangeRate/USDEUR
 Accept: application/json
 
 ###
-PATCH http://localhost:8080/Currency_exchange_war/exchangeRate/KZTRUB
+PATCH http://localhost:8080/Currency_exchange_war_exploded/exchangeRate/RUBKZT
 Content-Type: application/x-www-form-urlencoded
 
 rate=6

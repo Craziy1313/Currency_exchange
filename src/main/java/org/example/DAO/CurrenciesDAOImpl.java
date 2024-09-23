@@ -32,7 +32,8 @@ public class CurrenciesDAOImpl implements CurrenciesDAO{
     public void deleteCurrenciesTable() {
         try (Connection connection = SQLiteConnection.getConnect()) {
             Statement statement = connection.createStatement();
-            statement.executeUpdate("DROP TABLE Currencies");
+            statement.executeUpdate("DROP TABLE IF EXISTS Currencies");
+            System.out.println("Currencies table deleted.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

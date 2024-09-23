@@ -37,7 +37,8 @@ public class ExchangeRatesDAOImpl implements ExchangeRatesDAO{
     public void deleteExchangeRatesTable() {
         try (Connection connection = SQLiteConnection.getConnect()) {
             Statement statement = connection.createStatement();
-            statement.executeUpdate("DROP TABLE ExchangeRate");
+            statement.executeUpdate("DROP TABLE IF EXISTS ExchangeRate");
+            System.out.println("Exchange rates table deleted.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
