@@ -34,3 +34,4 @@ PATCH http://localhost:8080/Currency_exchange_war/exchangeRate/RUBKZT
 Content-Type: application/x-www-form-urlencoded
 
 rate=6
+
