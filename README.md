@@ -85,6 +85,7 @@ GET /currency/EUR #
 "code": "EUR",
 "sign": "€"
 }
+
 HTTP коды ответов:
 
 Успех - 200
@@ -100,6 +101,7 @@ POST /currencies #
 "code": "EUR",
 "sign": "€"
 }
+
 HTTP коды ответов:
 
 Успех - 201
