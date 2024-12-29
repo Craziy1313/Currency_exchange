@@ -1,13 +1,13 @@
 package org.example.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.DAO.ExchangeRatesDAO;
-import org.example.DAO.ExchangeRatesDAOImpl;
-import org.example.DTO.ErrorMessage;
+import org.example.dao.ExchangeRatesDAO;
+import org.example.dao.ExchangeRatesDAOImpl;
+import org.example.dto.ErrorMessage;
 import org.example.models.ExchangeRates;
+import org.example.services.ErrorResponse;
 import org.example.services.ParameterValidation;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,16 +19,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static org.example.services.ErrorResponse.sendErrorResponse;
 
 @WebServlet ("/exchangeRates")
 public class ExchangeRatesServlets extends HttpServlet {
 
     private final ExchangeRatesDAO exchangeRatesDAO = new ExchangeRatesDAOImpl();
+
     private static final Logger logger = Logger.getLogger(ExchangeRatesServlets.class.getName());
 
+    private final ParameterValidation parameterValidation = new ParameterValidation();
+
+    private final ErrorResponse errorResponse = new ErrorResponse();
+
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
@@ -47,7 +51,7 @@ public class ExchangeRatesServlets extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
@@ -56,13 +60,13 @@ public class ExchangeRatesServlets extends HttpServlet {
         String targetCurrencyCode = req.getParameter("targetCurrencyCode");
         Double rate = Double.valueOf(req.getParameter("rate"));
 
-        Optional <ErrorMessage> errorMessageOptional = ParameterValidation.ExchangeRatesValidation(
+        Optional <ErrorMessage> errorMessageOptional = parameterValidation.ExchangeRatesValidation(
                 baseCurrencyCode, targetCurrencyCode, rate);
 
         if (errorMessageOptional.isPresent()) {
             ErrorMessage errorMessage = errorMessageOptional.get();
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); //400 Ошибка
-            sendErrorResponse(resp, errorMessage);
+            errorResponse.sendErrorResponse(resp, errorMessage);
         } else {
             try {
                 exchangeRatesDAO.saveExchangeRates(baseCurrencyCode, targetCurrencyCode, rate);
@@ -79,7 +83,7 @@ public class ExchangeRatesServlets extends HttpServlet {
                     ErrorMessage errorMessage =  new ErrorMessage();
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     errorMessage.setMessage("Одна (или обе) валюта из валютной пары не существует в БД"); // 409 Конфликт
-                    sendErrorResponse(resp,errorMessage);
+                    errorResponse.sendErrorResponse(resp,errorMessage);
                 }
 
             } catch (SQLException e) {
@@ -89,11 +93,11 @@ public class ExchangeRatesServlets extends HttpServlet {
                         e.getMessage().contains("Валютная пара с таким кодом уже существует")) {
                     resp.setStatus(HttpServletResponse.SC_CONFLICT);
                     errorMessage.setMessage("Валютная пара с таким кодом уже существует"); // 409 Конфликт
-                    sendErrorResponse(resp, errorMessage);
+                    errorResponse.sendErrorResponse(resp, errorMessage);
                 } else {
                     resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     errorMessage.setMessage(e.getMessage());// 500 Ошибка сервера
-                    sendErrorResponse(resp, errorMessage);
+                    errorResponse.sendErrorResponse(resp, errorMessage);
                 }
             }
         }

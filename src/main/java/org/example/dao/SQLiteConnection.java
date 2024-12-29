@@ -1,4 +1,4 @@
-package org.example.DAO;
+package org.example.dao;
 
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -9,9 +9,13 @@ import java.sql.SQLException;
 
 public class SQLiteConnection {
 
+    private static Connection connection;
 
     public static Connection getConnect() {
-        Connection connection = null;
+
+        if (connection != null) {
+            return connection;
+        }
 
         try {
             Class.forName("org.sqlite.JDBC");

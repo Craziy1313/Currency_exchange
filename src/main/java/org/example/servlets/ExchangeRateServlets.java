@@ -1,9 +1,10 @@
 package org.example.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.DAO.ExchangeRatesDAOImpl;
-import org.example.DTO.ErrorMessage;
+import org.example.dao.ExchangeRatesDAOImpl;
+import org.example.dto.ErrorMessage;
 import org.example.models.ExchangeRates;
+import org.example.services.ErrorResponse;
 import org.example.services.ParameterValidation;
 
 import javax.servlet.ServletException;
@@ -15,13 +16,17 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Optional;
 
-import static org.example.services.ErrorResponse.sendErrorResponse;
 
 @WebServlet ("/exchangeRate/*")
 public class ExchangeRateServlets extends HttpServlet {
 
     private final ObjectMapper mapper = new ObjectMapper();
+
     private final ExchangeRatesDAOImpl exchangeRatesDAO = new ExchangeRatesDAOImpl();
+
+    private final ParameterValidation parameterValidation = new ParameterValidation();
+
+    private final ErrorResponse errorResponse = new ErrorResponse();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -34,13 +39,13 @@ public class ExchangeRateServlets extends HttpServlet {
         String baseCurrencyCode = pathInfo.substring(0, 3);
         String targetCurrencyCode = pathInfo.substring(3, 6);
 
-        Optional < ErrorMessage> errorMessageOptional = ParameterValidation.ExchangeRateValidation(
+        Optional <ErrorMessage> errorMessageOptional = parameterValidation.ExchangeRateValidation(
                 baseCurrencyCode, targetCurrencyCode);
 
         if (errorMessageOptional.isPresent()) {
             ErrorMessage errorMessage = errorMessageOptional.get();
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); //400 Ошибка
-            sendErrorResponse(resp, errorMessage);
+            errorResponse.sendErrorResponse(resp, errorMessage);
         } else {
             Optional<ExchangeRates> exchangeRates = exchangeRatesDAO.getExchangeRatesByCode(
                     baseCurrencyCode, targetCurrencyCode);
@@ -54,7 +59,7 @@ public class ExchangeRateServlets extends HttpServlet {
                 ErrorMessage errorMessage = new ErrorMessage();
                 errorMessage.setMessage("Обменный курс для пары не найден");
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                sendErrorResponse(resp, errorMessage);
+                errorResponse.sendErrorResponse(resp, errorMessage);
             }
         }
     }
@@ -72,13 +77,13 @@ public class ExchangeRateServlets extends HttpServlet {
         String paramRateValue = parameter.replace("rate=", "");
         Double rate = Double.valueOf(paramRateValue);
 
-        Optional <ErrorMessage> errorMessageOptional = ParameterValidation.ExchangeRatesValidation(
+        Optional <ErrorMessage> errorMessageOptional = parameterValidation.ExchangeRatesValidation(
                 baseCurrencyCode, targetCurrencyCode, rate);
 
         if (errorMessageOptional.isPresent()) {
             ErrorMessage errorMessage = errorMessageOptional.get();
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); //400 Ошибка
-            sendErrorResponse(resp, errorMessage);
+            errorResponse.sendErrorResponse(resp, errorMessage);
         } else {
 
             Optional<ExchangeRates> exchangeRates = exchangeRatesDAO.getExchangeRatesByCode(
@@ -97,7 +102,7 @@ public class ExchangeRateServlets extends HttpServlet {
                 ErrorMessage errorMessage = new ErrorMessage();
                 errorMessage.setMessage("Валютная пара отсутствует в базе данных");
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                sendErrorResponse(resp, errorMessage);
+                errorResponse.sendErrorResponse(resp, errorMessage);
             }
         }
     }

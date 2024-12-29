@@ -1,6 +1,6 @@
 package org.example.servlets;
 
-import org.example.DAO.*;
+import org.example.dao.*;
 import org.example.util.DatabaseInitializer;
 
 import javax.servlet.ServletContextEvent;

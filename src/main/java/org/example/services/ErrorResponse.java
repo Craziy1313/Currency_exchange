@@ -1,7 +1,7 @@
 package org.example.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.DTO.ErrorMessage;
+import org.example.dto.ErrorMessage;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 
 public class ErrorResponse {
 
-    public static void sendErrorResponse(HttpServletResponse resp, ErrorMessage errorMessage) throws IOException {
+    public void sendErrorResponse(HttpServletResponse resp, ErrorMessage errorMessage) throws IOException {
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");

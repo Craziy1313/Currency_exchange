@@ -1,4 +1,4 @@
-package org.example.DAO;
+package org.example.dao;
 
 import org.example.models.Currencies;
 import org.sqlite.SQLiteErrorCode;
@@ -60,7 +60,6 @@ public class CurrenciesDAOImpl implements CurrenciesDAO{
                 throw e;
             }
         }
-
     }
 
     @Override
@@ -78,7 +77,6 @@ public class CurrenciesDAOImpl implements CurrenciesDAO{
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error saving currency: " + e.getMessage(), e);
         }
-
     }
 
     @Override

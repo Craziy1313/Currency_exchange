@@ -1,6 +1,7 @@
-package org.example.DTO;
+package org.example.dto;
 
 public class ErrorMessage {
+
     String message;
 
     public String getMessage() {
@@ -10,4 +11,11 @@ public class ErrorMessage {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    public ErrorMessage(String message) {
+        this.message = message;
+    }
+
+    public ErrorMessage(){};
+
 }

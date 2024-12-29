@@ -1,18 +1,13 @@
 package org.example.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Currencies {
-    //Айди валюты, автоинкремент, первичный ключ
+
     private int id;
 
-    //Айди валюты, автоинкремент, первичный ключ
     private String code;
 
-    //Полное имя валюты
     private String name;
 
-    //Символ валюты
     private String sign;
 
     public int getId() {

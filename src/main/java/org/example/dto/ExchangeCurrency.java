@@ -1,6 +1,5 @@
-package org.example.DTO;
+package org.example.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.example.models.Currencies;
 
 import java.math.BigDecimal;

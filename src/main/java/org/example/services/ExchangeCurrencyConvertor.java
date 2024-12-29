@@ -1,8 +1,8 @@
 package org.example.services;
 
-import org.example.DAO.ExchangeRatesDAO;
-import org.example.DAO.ExchangeRatesDAOImpl;
-import org.example.DTO.ExchangeCurrency;
+import org.example.dao.ExchangeRatesDAO;
+import org.example.dao.ExchangeRatesDAOImpl;
+import org.example.dto.ExchangeCurrency;
 import org.example.models.ExchangeRates;
 
 import java.math.BigDecimal;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class ExchangeCurrencyConvertor {
 
-    public static Optional<ExchangeCurrency> convert(
+    public Optional<ExchangeCurrency> convert(
             String baseCurrency, String targetCurrency, Double Amount) {
 
         ExchangeRatesDAO exchangeRatesDAO = new ExchangeRatesDAOImpl();
@@ -24,35 +24,40 @@ public class ExchangeCurrencyConvertor {
         Optional<ExchangeRates> exchangeRateReverseCourseUSDtoB = exchangeRatesDAO.getExchangeRatesByCode(
                 "USD", targetCurrency);
 
-// Если есть курс A -> B в БД
+/**
+ * Если есть курс A -> B в БД
+ */
         if (exchangeRates.isPresent()) {
             ExchangeRates exchangeRate = exchangeRates.get();
-            ExchangeCurrency exchangeCurrency = ExchangeCurrencyConvertor.convertCurrency(exchangeRate, Amount);
+            ExchangeCurrency exchangeCurrency = convertCurrency(exchangeRate, Amount);
             return Optional.of(exchangeCurrency);
 
-// Если есть курс В -> А в БД
+/**
+ * Если есть курс В -> А в БД
+ */
         } else if (exchangeRateReverseCourse.isPresent()) {
             ExchangeRates exchangeRate = exchangeRateReverseCourse.get();
-            ExchangeCurrency exchangeCurrency = ExchangeCurrencyConvertor.convertCurrencyReverseCourse(
+            ExchangeCurrency exchangeCurrency = convertCurrencyReverseCourse(
                     exchangeRate, Amount);
             return Optional.of(exchangeCurrency);
 
-// Если есть курс USD -> A &&  USD -> B в БД
+/**
+ * Если есть курс USD -> A &&  USD -> B в БД
+ */
         } else if (exchangeRateReverseCourseUSDtoA.isPresent() && exchangeRateReverseCourseUSDtoB.isPresent()) {
             ExchangeRates exchangeRateA = exchangeRateReverseCourseUSDtoA.get();
             ExchangeRates exchangeRateB = exchangeRateReverseCourseUSDtoB.get();
 
-            ExchangeCurrency exchangeCurrency = ExchangeCurrencyConvertor.convertExchangeRatesWithUSD(
+            ExchangeCurrency exchangeCurrency = convertExchangeRatesWithUSD(
                     exchangeRateA,exchangeRateB, Amount);
             return Optional.of(exchangeCurrency);
 
         } else {
             return Optional.empty();
         }
-
     }
 
-    public static ExchangeCurrency convertCurrency(
+    public ExchangeCurrency convertCurrency(
             ExchangeRates exchangeRates, Double Amount) {
 
         ExchangeCurrency exchangeCurrency = new ExchangeCurrency();
@@ -67,7 +72,7 @@ public class ExchangeCurrencyConvertor {
         );
         return exchangeCurrency;
     }
-    public static ExchangeCurrency convertCurrencyReverseCourse(
+    public ExchangeCurrency convertCurrencyReverseCourse(
             ExchangeRates exchangeRates, Double Amount) {
 
         ExchangeCurrency exchangeCurrency = new ExchangeCurrency();
@@ -83,7 +88,7 @@ public class ExchangeCurrencyConvertor {
         return exchangeCurrency;
     }
 
-    public static ExchangeCurrency convertExchangeRatesWithUSD(
+    public ExchangeCurrency convertExchangeRatesWithUSD(
             ExchangeRates exchangeRatesA, ExchangeRates exchangeRatesB, Double Amount) {
 
         ExchangeCurrency exchangeCurrency = new ExchangeCurrency();
